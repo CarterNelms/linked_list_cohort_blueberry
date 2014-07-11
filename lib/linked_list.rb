@@ -20,8 +20,6 @@ class LinkedList
       end
     end
     item
-    # return item if item.next_item.nil?
-    # item = last(item.next_item)
   end
 
   def last
@@ -56,13 +54,7 @@ class LinkedList
   end
 
   def size
-    item = @first
-    s = 0
-    while item
-      s += 1
-      item = item.next_item
-    end
-    s
+    items.size
   end
 
   def to_s
