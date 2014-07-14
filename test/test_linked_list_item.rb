@@ -75,4 +75,32 @@ class LinkedListItemTest < MiniTest::Unit::TestCase
     assert lli1 < lli2
     assert lli2 > lli1
   end
+
+  def test_04f_comparator_symbol
+    lli1 = LinkedListItem.new(:bar)
+    lli2 = LinkedListItem.new("bar")
+    assert lli1 > lli2
+    assert lli2 < lli1
+  end
+
+  def test_04g_comparator_integer_string
+    lli1 = LinkedListItem.new(1)
+    lli2 = LinkedListItem.new("1")
+    assert lli1 < lli2
+    assert lli2 > lli1
+  end
+
+  def test_04h_comparator_lesser_than
+    lli1 = LinkedListItem.new(:foo)
+    lli2 = LinkedListItem.new(:bar)
+    assert lli2 < lli1
+  end
+
+  def test_04i_comparator_integer_string
+    lli1 = LinkedListItem.new(1)
+    lli2 = LinkedListItem.new(2)
+    assert lli1 < lli2
+    assert lli2 > lli1
+  end
+
 end
