@@ -54,23 +54,40 @@ class LinkedList
   end
 
   def size
-    items.size
+    # items.size
+    #--------------------------------
+    item_count = 0
+    item = @first
+    while item
+      item = item.next_item
+      item_count += 1
+    end
+    item_count
   end
 
   def to_s
-    items = self.items
-    return items.size > 0 ? '| ' + items.join(', ') + ' |' : '| |'
-  end
-
-  def items
-    items = []
+    # items = self.items
+    # return items.size > 0 ? '| ' + items.join(', ') + ' |' : '| |'
+    #--------------------------------
+    joined_items = ''
     item = @first
-    while !item.nil?
-      items.push(item.payload)
+    while item
+      joined_items += (item === @first ? '' : ',') + ' ' + item.payload
       item = item.next_item
     end
-    items
+    '|' + joined_items + ' |'
   end
+
+  # This function is a 'shortcut' that ought not be used with this exercise
+  # def items
+  #   items = []
+  #   item = @first
+  #   while !item.nil?
+  #     items.push(item.payload)
+  #     item = item.next_item
+  #   end
+  #   items
+  # end
 
   def [](index)
     get(index)
@@ -101,7 +118,21 @@ class LinkedList
   end
 
   def index(value)
-    self.items.index(value)
+    # self.items.index(value)
+    #--------------------------------
+    index = nil
+    current_index = 0
+    item = @first
+    while item
+      if item.payload === value
+        index = current_index
+        break
+      else
+        item = item.next_item
+        current_index += 1
+      end
+    end
+    index
   end
 
 end
