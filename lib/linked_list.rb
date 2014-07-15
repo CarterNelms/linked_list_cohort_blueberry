@@ -160,37 +160,20 @@ class LinkedList
     while !self.sorted?
       last_item = nil
       item = @first
+      index = 0
       while item
         next_item = item.next_item
         if next_item
           type1 = item.payload.class
           type2 = next_item.payload.class   
-          if type1 == type2
-            if item.payload > next_item.payload
-              if last_item
-                last_item.next_item = next_item
-              else
-                @first = next_item
-              end
-              item.next_item = next_item.next_item
-              next_item.next_item = item
-              item = nil
-            else
-              last_item = item
-              item = item.next_item
-            end
-          elsif precedence.index(type1) > precedence.index(type2)
-            if last_item
-              last_item.next_item = next_item
-            else
-              @first = next_item
-            end
-            item.next_item = next_item.next_item
-            next_item.next_item = item
+          should_swap = type1 == type2 ? item.payload > next_item.payload : precedence.index(type1) > precedence.index(type2)
+          if should_swap
+            self.swap_with_next(index)
             item = nil
           else
             last_item = item
             item = item.next_item
+            index += 1
           end
         end
       end
