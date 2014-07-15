@@ -31,4 +31,5 @@ class LinkedListItem
       left <=> right
     end
   end
+
 end

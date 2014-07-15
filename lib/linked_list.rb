@@ -72,7 +72,7 @@ class LinkedList
     joined_items = ''
     item = @first
     while item
-      joined_items += (item === @first ? '' : ',') + ' ' + item.payload
+      joined_items += (item === @first ? '' : ',') + ' ' + item.payload.to_s
       item = item.next_item
     end
     '|' + joined_items + ' |'
@@ -135,104 +135,85 @@ class LinkedList
     index
   end
 
-end
-=======
-  def initialize(*payloads)
-    payloads.each do |payload|
-      push(payload)
-    end
-  end
-
-  def []=(index, payload)
-    item = get_item(index)
-    item.payload = payload
-  end
-
-  def [](index)
-    get_item(index).payload
-  end
-  ## What does this do? Look it up ;)
-  alias get []
-
-  def delete(index)
-    raise IndexError if index > size
-    if index == 0
-      @first_item = @first_item.next_item
-    else
-      previous_item = get_item(index - 1)
-      next_item = previous_item.next_item.next_item
-      previous_item.next_item = next_item
-    end
-  end
-
-  def index(payload)
-    index = -1
-    current_item = @first_item
-    until current_item.nil?
-      index += 1
-      return index if current_item.payload == payload
-      current_item = current_item.next_item
-    end
-    nil
-  end
-
-  def push(value)
-    lli = LinkedListItem.new(value)
-    if @first_item
-      last_item.next_item = lli
-    else
-      @first_item = lli
-    end
-  end
-
-  def last
-    return unless @first_item
-    last_item.payload
-  end
-
-  ## How could we do this more efficiently?
-  def size
-    i = 0
-    current_item = @first_item
-    until current_item.nil?
-      i += 1
-      current_item = current_item.next_item
-    end
-    i
-  end
-
-  def to_s
-    result = "|"
-    current_item = @first_item
-    until current_item.nil?
-      result << " #{current_item.payload}"
-      unless current_item.last?
-        result << ","
+  def sorted?
+    item = @first
+    precedence = [Fixnum, String, Symbol]
+    while item
+      if item.next_item
+        type1 = item.payload.class
+        type2 = item.next_item.payload.class
+        if type1 == type2
+          if item.payload > item.next_item.payload
+            return false
+          end
+        elsif precedence.index(type1) > precedence.index(type2)
+          return false
+        end
       end
-      current_item = current_item.next_item
+      item = item.next_item
     end
-    result << " |"
-    result
+    true
   end
 
-  private
-
-  def get_item(index)
-    raise IndexError if index < 0
-    current_item = @first_item
-    index.times do
-      raise IndexError if current_item.nil?
-      current_item = current_item.next_item
+  def sort!
+    precedence = [Fixnum, String, Symbol]
+    while !self.sorted?
+      last_item = nil
+      item = @first
+      while item
+        next_item = item.next_item
+        if next_item
+          type1 = item.payload.class
+          type2 = next_item.payload.class   
+          if type1 == type2
+            if item.payload > next_item.payload
+              if last_item
+                last_item.next_item = next_item
+              else
+                @first = next_item
+              end
+              item.next_item = next_item.next_item
+              next_item.next_item = item
+              item = nil
+            else
+              last_item = item
+              item = item.next_item
+            end
+          elsif precedence.index(type1) > precedence.index(type2)
+            if last_item
+              last_item.next_item = next_item
+            else
+              @first = next_item
+            end
+            item.next_item = next_item.next_item
+            next_item.next_item = item
+            item = nil
+          else
+            last_item = item
+            item = item.next_item
+          end
+        end
+      end
     end
-    current_item
   end
 
-  def last_item
-    return unless @first_item
-    current_item = @first_item
-    until current_item.last?
-      current_item = current_item.next_item
+  def swap_with_next(index)
+    if index >= self.size - 1
+      raise IndexError
+    else
+      item = self.get_item(index)
+      next_item = item.next_item
+      if next_item
+        last_item = index > 0 ? self.get_item(index-1) : nil
+        if last_item
+          last_item.next_item = next_item
+        else
+          @first = next_item
+        end
+        item.next_item = next_item.next_item
+        next_item.next_item = item
+      end
     end
-    current_item
   end
+
 end
